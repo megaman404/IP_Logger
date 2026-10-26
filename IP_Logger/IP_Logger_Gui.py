@@ -1,12 +1,11 @@
 import tkinter as tk
-from datetime import datetime
+from datetime import datetime as dt
 import IP_Logger_Logic
 import re
 
 class IPLogger_gui:
     """ <class IPLogger_gui> displays tkinter window/widgets and calls <class IPLogger_Logger> for backend processes """
     def __init__(self, root: tkinter, logic: IP_Logger_Logic.IPLogger) -> None:
-        print("i was initied")
         # init Window
         self.root = root
         self.root.title("IP Logger App")
@@ -29,17 +28,26 @@ class IPLogger_gui:
         self.result_label = tk.Label(root, text = "", font = ("Arial", 11, "bold"))
         self.result_label.pack(pady = 10)
 
+        # init today's date
+        self.date_label = tk.Label(root, text = "", font = ("Arial"), fg = "gray")
+        self.date_label.pack()
+
         # init Military Dialog
         self.time_label = tk.Label(root, text = "", font = ("Arial", 10), fg = "gray")
-        self.time_label.pack(pady = 5)
+        self.time_label.pack()
+
 
     def gui_handle_enter(self, event: tkinter.Event) -> None:
         """ onEnter bind, display red for invalid inputs, display green for valid inputs, and display time """
         user_text = self.text_entry.get().strip().replace(" ", "")
         
-        now = datetime.now()
-        military_time = now.strftime("%H:%M")      
-        self.time_label.config(text = f"Military Time: {military_time}")
+        todays_time = dt.now()
+        todays_date = dt.today()
+        
+        military_time = todays_time.strftime("%H%M")
+
+        self.time_label.config(text = f"Military Time: {military_time} PDT")
+        self.date_label.config(text = f"{todays_date.month}/{todays_date.day}/{todays_date.year}")
 
         # regex rules
         format_rule = r"^\d+(?:\.\d+){3}$"
