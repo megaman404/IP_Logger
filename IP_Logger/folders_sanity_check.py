@@ -3,7 +3,7 @@ from pathlib import Path
 def check_folders() -> None:
     """ Checks for Graphs and Reports folders, otherwise create them """
     try:
-        current_directory = Path(__file__).absolute()
+        current_directory = Path(__file__).parent.absolute()
         check_graphs_folder = current_directory / "Graphs"
         check_reports_folder = current_directory / "Reports"
 

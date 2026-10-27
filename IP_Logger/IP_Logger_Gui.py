@@ -2,6 +2,7 @@ import tkinter as tk
 from datetime import datetime as dt
 import IP_Logger_Logic
 import re
+from IP_Logger import get_military_time
 
 class IPLogger_gui:
     """ <class IPLogger_gui> displays tkinter window/widgets and calls <class IPLogger_Logger> for backend processes """
@@ -36,7 +37,14 @@ class IPLogger_gui:
         self.time_label = tk.Label(root, text = "", font = ("Arial", 10), fg = "gray")
         self.time_label.pack()
 
+        #init Export Button gui
+        self.button_export_report = tk.Button(root, text='Export Report', command = self.logic.export_report)
+        self.button_export_graph = tk.Button(root, text='Export Graph', command = self.logic.export_report)
+        self.button_save = tk.Button(root, text='Save Data', command = self.logic.save_file)
 
+    def gui_handle_delete(self) -> None:
+        pass
+    
     def gui_handle_enter(self, event: tkinter.Event) -> None:
         """ onEnter bind, display red for invalid inputs, display green for valid inputs, and display time """
         user_text = self.text_entry.get().strip().replace(" ", "")
@@ -44,7 +52,7 @@ class IPLogger_gui:
         todays_time = dt.now()
         todays_date = dt.today()
         
-        military_time = todays_time.strftime("%H%M")
+        military_time = get_military_time()
 
         self.time_label.config(text = f"Military Time: {military_time} PDT")
         self.date_label.config(text = f"{todays_date.month}/{todays_date.day}/{todays_date.year}")
@@ -69,4 +77,10 @@ class IPLogger_gui:
 
             # start IP_Logger logic
             self.logic.handle_enter(user_text)
+            self.button_export_report.pack(side = "left")
+            self.button_export_graph.pack(side = "left")
+            self.button_save.pack(side="right")
+
+    def gui_generate_graph(self) -> None:
+        pass
         
