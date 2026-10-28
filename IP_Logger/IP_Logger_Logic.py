@@ -1,13 +1,13 @@
 import tkinter as tk
-import IP_Logger_Gui
 from pathlib import Path
 import IP_Logger as myApp
 from datetime import datetime as dt
 
 
 class IPLogger:
-    """ <class IPLogger> handles the backend for creating graphs and reports using tkinter and txt files """ 
+    """ <class IPLogger.__init__> handles the backend for creating graphs and reports using tkinter and txt files """ 
     def __init__(self):
+        self.myGui = None
         self.user_input = ""
         self.current_directory = Path(__file__).parent.absolute()
         self.report_dictionary = dict(
@@ -17,10 +17,8 @@ class IPLogger:
          "1800-1900": [],"1900-2000": [],"2000-2100": [],"2100-2200": [],"2200-2300": [],"2300-2400": []})
 
     def handle_enter(self, user_input: tkinter.Entry) -> None:
-        """ onEnter <class IPLogger.handle_enter> takes tkinter entry as a string to append to txt file"""
-        
+        """ <class IPLogger.handle_enter> onEnter, takes tkinter entry as a string to append to txt file"""
         for k,v in self.report_dictionary.items():
-            print("hello", k[-4:])
             if int(myApp.get_military_time()) < int(k[-4:]):
                 self.report_dictionary[k].append(user_input)
                 break
@@ -31,7 +29,6 @@ class IPLogger:
         """ <class IPLogger.export_report> handles backend to export dictionary into file """
         print("exporting report file")
         file_name = myApp.get_report_name()
-        print(file_name)
         reports = self.current_directory / "Reports" / f"{file_name}"
         reports.touch()
 
@@ -41,6 +38,7 @@ class IPLogger:
                 for i in v:
                     f.write(f"{i}\n")
                 f.write("\n")
+        self.myGui.gui_msg("Export Report")
                 
     def save_file(self) -> None:
         """ <IPLogger.save_file> saves report and graph files and puts it into a history folder """

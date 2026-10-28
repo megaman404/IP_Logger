@@ -5,15 +5,14 @@ import re
 from IP_Logger import get_military_time
 
 class IPLogger_gui:
-    """ <class IPLogger_gui> displays tkinter window/widgets and calls <class IPLogger_Logger> for backend processes """
+    """ <class IPLogger_Gui> displays tkinter window/widgets and calls <class IPLogger_Logger> for backend processes """
     def __init__(self, root: tkinter, logic: IP_Logger_Logic.IPLogger) -> None:
         # init Window
-        self.root = root
+        self.root, self.logic = root, logic
         self.root.title("IP Logger App")
         self.root.geometry("400x200")
-        self.root.minsize(400, 200)
-        self.root.maxsize(400,200)
-        self.logic = logic
+        self.root.minsize(410, 300)
+        self.root.maxsize(410, 300)
 
         # init Instructions
         self.instruction_label = tk.Label(root, text = "Type Radio IP and press Enter:", font = ("Arial", 11))
@@ -21,7 +20,6 @@ class IPLogger_gui:
 
         # init Entry Box
         self.text_entry = tk.Entry(root, width = 25, font = ("Arial", 12))
-
         self.text_entry.pack(pady = 5)
         self.text_entry.bind("<Return>", self.gui_handle_enter)
 
@@ -37,23 +35,19 @@ class IPLogger_gui:
         self.time_label = tk.Label(root, text = "", font = ("Arial", 10), fg = "gray")
         self.time_label.pack()
 
-        #init Export Button gui
+        # init Export Button gui
         self.button_export_report = tk.Button(root, text='Export Report', command = self.logic.export_report)
         self.button_export_graph = tk.Button(root, text='Export Graph', command = self.logic.export_report)
         self.button_save = tk.Button(root, text='Save Data', command = self.logic.save_file)
-
-    def gui_handle_delete(self) -> None:
-        pass
     
     def gui_handle_enter(self, event: tkinter.Event) -> None:
-        """ onEnter bind, display red for invalid inputs, display green for valid inputs, and display time """
+        """ <class IPLogger_Gui.gui_handle_enter> onEnter bind, display red for invalid inputs, display green for valid inputs, and display time """
         user_text = self.text_entry.get().strip().replace(" ", "")
         
         todays_time = dt.now()
         todays_date = dt.today()
         
         military_time = get_military_time()
-
         self.time_label.config(text = f"Military Time: {military_time} PDT")
         self.date_label.config(text = f"{todays_date.month}/{todays_date.day}/{todays_date.year}")
 
@@ -61,7 +55,7 @@ class IPLogger_gui:
         format_rule = r"^\d+(?:\.\d+){3}$"
         invalid_chars = re.findall(r"[^0-9.]", user_text)
 
-        # check correct syntax
+        # checks correct syntax
         if not user_text:
             self.result_label.config(text = "Please Enter a Valid IP", fg = "red")
             self.text_entry.delete(0, tk.END)
@@ -77,10 +71,21 @@ class IPLogger_gui:
 
             # start IP_Logger logic
             self.logic.handle_enter(user_text)
+            
             self.button_export_report.pack(side = "left")
             self.button_export_graph.pack(side = "left")
             self.button_save.pack(side="right")
+            
+    def gui_msg(self, button_pressed: str) -> None:
+        """ <class IPLogger_Gui.gui_msg> displays a feedback of buttons pressed """
+        if button_pressed == "Export Report":
+            self.instruction_label = tk.Label(self.root, text = "apples", font = ("Arial", 11), fg = "green")
+            self.instruction_label.pack(col=0,row=0)
+            self.root.after(1000, self.instruction_label.destroy)
 
     def gui_generate_graph(self) -> None:
+        pass
+
+    def gui_handle_delete(self) -> None:
         pass
         
